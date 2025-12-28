@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.A CONCRETE | ARCHITECTURAL FINISHES</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           CSS VARIABLES
+           ========================================================================== */
+        :root {
+            --c-orange: #FF4D00;
+            --c-bg: #F0F0F0;       
+            --c-text: #1A1A1A;     
+            --f-body: 'Outfit', sans-serif;
+            --f-heading: 'Kanit', sans-serif;
+            --ease: cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        /* Base Reset */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        body {
+            background-color: var(--c-bg);
+            color: var(--c-text);
+            font-family: var(--f-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1 {
+            font-family: var(--f-heading);
+            font-size: clamp(3rem, 10vw, 10rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: #0F0F0F;
+            text-shadow: 0px 4px 20px rgba(255, 255, 255, 0.4);
+        }
+        h1 span { display: block; overflow: hidden; }
+
+        /* Noise Overlay */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999; pointer-events: none; opacity: 0.05;
+            filter: invert(1);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Nav & Buttons */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 100px;
+            padding: 0 4vw; display: flex; justify-content: space-between;
+            align-items: center; z-index: 1000;
+        }
+        .logo { font-family: var(--f-heading); font-size: 1.2rem; font-weight: 700; letter-spacing: -1px; color: var(--c-text); }
+        .logo span { color: var(--c-orange); }
+
+        .mag-btn {
+            display: inline-block; padding: 1.5rem 3rem; border: 1px solid var(--c-text);
+            border-radius: 100px; text-transform: uppercase; letter-spacing: 2px;
+            font-size: 0.75rem; font-weight: 800; position: relative; overflow: hidden;
+            color: var(--c-text); text-decoration: none; cursor: pointer;
+            transition: color 0.4s;
+        }
+        .mag-btn .inner { position: relative; z-index: 2; }
+        .mag-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--c-orange); transform: translateY(100%);
+            transition: transform 0.4s var(--ease); z-index: 1;
+        }
+        .mag-btn:hover { color: var(--c-bg); border-color: var(--c-orange); }
+        .mag-btn:hover::before { transform: translateY(0); }
+
+        /* Loader */
+        .loader {
+            position: fixed; inset: 0; background: var(--c-bg); z-index: 20000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .loader-logo {
+            font-family: var(--f-heading); font-size: 5vw; font-weight: 700;
+            letter-spacing: -2px; overflow: hidden; display: flex; gap: 1rem;
+        }
+        .loader-logo span { display: block; transform: translateY(110%); }
+        .loader-logo .accent { color: var(--c-text); transition: color 0.3s; }
+
+        /* Hero */
+        .hero {
+            height: 100vh; width: 100%; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hero-img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 120%;
+            /* RESTORED YOUR IMAGE */
+            background: url('LAConcrete/images/la1.png') center/cover no-repeat;
+            opacity: 0.9; z-index: 1; will-change: transform, filter;
+        }
+        .hero-content { position: relative; z-index: 2; text-align: center; }
+
+        /* Intro Section */
+        .content-transition { background: var(--c-bg); position: relative; z-index: 5; }
+        .intro-header {
+            padding: 15vh 4vw 10vh 4vw; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 4vw; align-items: end;
+        }
+        .intro-left h2 {
+            font-family: var(--f-heading); font-size: 3vw; line-height: 1;
+            color: #0F0F0F; text-transform: uppercase;
+        }
+        .intro-right p { font-size: 1.1rem; color: #555; max-width: 450px; line-height: 1.6; }
+
+        /* ==========================================================================
+           HORIZONTAL SCROLL SECTION (UPDATED)
+           ========================================================================== */
+        
+        .horizontal-scroll-wrapper {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+            
+            /* THE CLEAN FIX: CSS MASKS 
+               Instead of painting white over the top, we fade the content out using a mask.
+               This keeps the contrast perfect. */
+            -webkit-mask-image: linear-gradient(
+                to right, 
+                transparent 0%, 
+                black 5%, 
+                black 95%, 
+                transparent 100%
+            );
+            mask-image: linear-gradient(
+                to right, 
+                transparent 0%, 
+                black 5%, 
+                black 95%, 
+                transparent 100%
+            );
+        }
+
+        .horizontal-track {
+            display: flex;
+            flex-wrap: nowrap;
+            height: 100%;
+            gap: 0; 
+            position: relative;
+            z-index: 1;
+            padding-left: 5vw; /* Adds a little breathing room at the start */
+        }
+
+        .h-panel {
+            width: 80vw; /* Increased slightly to feel more cinematic */
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4vw;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        .panel-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4vw;
+            width: 100%;
+            max-width: 1600px;
+            align-items: center;
+        }
+
+        .panel-text h3 {
+            font-family: var(--f-heading);
+            font-size: 8vw; 
+            color: transparent;
+            -webkit-text-stroke: 2px var(--c-orange);
+            opacity: 0.3;
+            line-height: 1;
+        }
+        .panel-text h4 {
+            font-family: var(--f-heading);
+            font-size: 4vw;
+            text-transform: uppercase;
+            margin-top: -2vw;
+            margin-bottom: 20px;
+        }
+        .panel-text p { font-size: 1.2rem; color: #555; max-width: 400px; }
+        
+        .panel-img {
+            height: auto;
+            aspect-ratio: 4/3; /* Enforces a nice standard architectural photography shape */
+            width: 100%;
+            border-radius: 4px; /* Tighter radius looks more "industrial/concrete" */
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sharper, cleaner shadow */
+        }
+        .panel-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ==========================================================================
+           EXTENSION SECTION (FILLED)
+           ========================================================================== */
+        .parallax-extension {
+            position: relative; width: 100%; 
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            padding: 100px 0;
+            background-color: #111; 
+        }
+        .extension-bg {
+            position: absolute;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 150%; /* Massive height buffer */
+            
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('LAConcrete/images/la1.png') center/cover no-repeat;
+            z-index: 1; 
+            will-change: transform;
+            pointer-events: none; /* Good practice so it doesn't block clicks */
+        }
+        
+        .extension-container {
+            position: relative; z-index: 2; 
+            width: 90%; max-width: 1400px;
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 50px;
+            color: white;
+        }
+
+        .ext-left h2 {
+            font-family: var(--f-heading); font-size: 6vw; line-height: 0.9;
+            text-transform: uppercase; margin-bottom: 30px;
+        }
+        .ext-left p {
+            font-size: 1.2rem; margin-bottom: 40px; max-width: 500px; opacity: 0.9;
+        }
+
+        .ext-right {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-content: center;
+        }
+
+        .stat-box {
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 30px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
+        .stat-box h3 {
+            font-family: var(--f-heading); font-size: 3rem; color: var(--c-orange);
+            margin-bottom: 10px;
+        }
+        .stat-box p {
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+        }
+
+        /* Mobile Fixes */
+        @media (max-width: 1000px) {
+            .horizontal-scroll-wrapper { height: auto; display: block; }
+            .horizontal-track { flex-direction: column; height: auto; }
+            .h-panel { width: 100%; height: auto; padding: 100px 5vw; border-right: none; border-bottom: 1px solid #ddd; }
+            .panel-content { grid-template-columns: 1fr; }
+            .panel-img { height: 50vh; order: -1; margin-bottom: 30px; }
+            
+            .extension-container { grid-template-columns: 1fr; text-align: center; }
+            .ext-left h2 { font-size: 3.5rem; }
+            .ext-left p { margin: 0 auto 30px auto; }
+            .ext-right { margin-top: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <div class="loader">
+        <div class="loader-logo">
+            <span class="la">L.A</span> <span class="accent">CONCRETE</span>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">L.A <span>CONCRETE</span></div>
+        <a href="#" class="mag-btn"><span class="inner">Inquiry</span></a>
+    </nav>
+
+    <main id="main">
+        <section class="hero">
+            <div class="hero-img"></div>
+            <div class="hero-content">
+                <h1>
+                    <span>Architectural</span>
+                    <span>Foundations</span>
+                </h1>
+            </div>
+        </section>
+
+        <div class="content-transition">
+            
+            <section class="intro-header fade-away">
+                <div class="intro-left">
+                    <h2>Bespoke Finishes.<br>Industrial Strength.</h2>
+                </div>
+                <div class="intro-right">
+                    <p>
+                        We redefine structural integrity through architectural precision. 
+                        Serving Melbourne's most ambitious residential and commercial projects.
+                    </p>
+                </div>
+            </section>
+
+            <section class="horizontal-scroll-wrapper">
+                <div class="horizontal-track">
+                    
+                    <div class="h-panel">
+                        <div class="panel-content">
+                            <div class="panel-text">
+                                <h3>01.</h3>
+                                <h4>Preparation</h4>
+                                <p>Site analysis and detailed excavation ensuring the perfect foundation grade before we pour.</p>
+                            </div>
+                            <div class="panel-img">
+                                <img src="LAConcrete/images/la2.png" alt="Preparation">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="h-panel">
+                        <div class="panel-content">
+                            <div class="panel-text">
+                                <h3>02.</h3>
+                                <h4>Reinforcement</h4>
+                                <p>Precision steel fixing and mesh installation providing the tensile strength required for longevity.</p>
+                            </div>
+                            <div class="panel-img">
+                                <img src="LAConcrete/images/la3.png" alt="Reinforcement">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="h-panel">
+                        <div class="panel-content">
+                            <div class="panel-text">
+                                <h3>03.</h3>
+                                <h4>Placement</h4>
+                                <p>Expert concrete pouring and leveling, ensuring a flawless architectural finish.</p>
+                            </div>
+                            <div class="panel-img">
+                                <img src="LAConcrete/images/la4.png" alt="Placement">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="parallax-extension">
+                <div class="extension-bg"></div>
+                
+                <div class="extension-container fade-away">
+                    
+                    <div class="ext-left">
+                        <h2>Built to<br>Last.</h2>
+                        <p>Our commitment to quality ensures that every pour stands the test of time. From residential slabs to commercial infrastructure.</p>
+                        <a href="#" class="mag-btn" style="border-color: white; color: white;">
+                            <span class="inner">Start Project</span>
+                        </a>
+                    </div>
+
+                    <div class="ext-right">
+                        <div class="stat-box">
+                            <h3>15+</h3>
+                            <p>Years Experience</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>200+</h3>
+                            <p>Projects Completed</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>100%</h3>
+                            <p>Compliance Rate</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>24/7</h3>
+                            <p>Support Team</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // =========================================================================
+        // LOADER SEQUENCE (EXACT COPY FROM YOUR PROVIDED CODE)
+        // =========================================================================
+        const tlLoader = gsap.timeline();
+        tlLoader.to(".loader-logo span", { y: 0, duration: 1.2, ease: "power4.out", stagger: 0.2 });
+        tlLoader.to(".loader-logo .accent", { color: "var(--c-orange)", duration: 0.2, ease: "power2.in" }, "-=0.4");
+        tlLoader.to({}, { duration: 0.5 }); // The 0.5s PAUSE you wanted kept
+        tlLoader.to(".loader", { yPercent: -100, duration: 1.3, ease: "power4.inOut" });
+        
+        // Hero Reveals
+        tlLoader.from(".hero-img", { scale: 1.2, opacity: 0, duration: 1.5, ease: "power2.out" }, "-=0.8");
+        tlLoader.from(".hero-content h1 span", { yPercent: 110, duration: 1.2, ease: "power4.out", stagger: 0.1 }, "-=1");
+
+        // Parallax Triggers
+        gsap.to(".hero-img", { yPercent: 30, filter: "blur(10px)", ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }});
+        gsap.to(".hero-content", { y: -150, opacity: 0, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "50% top", scrub: true }});
+        gsap.fromTo(".extension-bg", 
+            { 
+                yPercent: -30
+            },
+            { 
+                yPercent: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".parallax-extension",
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            }
+        );
+
+        // =========================================================================
+        // HORIZONTAL SCROLL LOGIC
+        // =========================================================================
+        let mm = gsap.matchMedia();
+
+        mm.add("(min-width: 1001px)", () => {
+            const track = document.querySelector(".horizontal-track");
+            
+            function getScrollAmount() {
+                return track.scrollWidth - window.innerWidth;
+            }
+
+            const tween = gsap.to(track, {
+                x: () => -getScrollAmount(),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".horizontal-scroll-wrapper",
+                    pin: true,
+                    scrub: 1, 
+                    start: "top top",
+                    end: () => "+=" + getScrollAmount(), 
+                    invalidateOnRefresh: true
+                }
+            });
+
+            // CARDS: Vertical Rise + Hero Fade (Matches Top Section)
+            gsap.utils.toArray(".panel-content").forEach((panel, i) => {
+                if (i === 0) return; 
+
+                gsap.from(panel, {
+                    y: 150,            // CHANGED: Uses 'y' to rise up from bottom (instead of 'x')
+                    opacity: 0,        // Fades in
+                    duration: 1.5,     // Slower, premium speed
+                    ease: "power4.out", // The exact "Hero" easing
+                    scrollTrigger: {
+                        trigger: panel,
+                        containerAnimation: tween, 
+                        start: "left 85%", 
+                        toggleActions: "play none none reverse" 
+                    }
+                });
+            });
+        });
+
+        // Button Logic
+        document.querySelectorAll('.mag-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const r = btn.getBoundingClientRect();
+                gsap.to(btn, { x: (e.clientX - r.left - r.width/2)*0.3, y: (e.clientY - r.top - r.height/2)*0.3, duration: 0.4, ease: "power2.out" });
+                gsap.to(btn.querySelector('.inner'), { x: (e.clientX - r.left - r.width/2)*0.1, y: (e.clientY - r.top - r.height/2)*0.1, duration: 0.4, ease: "power2.out" });
+            });
+            btn.addEventListener('mouseleave', () => { 
+                gsap.to(btn, {x:0, y:0, duration: 0.4, ease: "power2.out"}); 
+                gsap.to(btn.querySelector('.inner'), {x:0, y:0, duration: 0.4, ease: "power2.out"}); 
+            });
+        });
+
+        // =========================================================================
+        // UNIVERSAL FADE-AWAY EFFECT
+        // =========================================================================
+        gsap.utils.toArray(".fade-away").forEach(element => {
+            gsap.to(element, {
+                opacity: 0,
+                y: -100,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top top",
+                    end: "bottom 20%",
+                    scrub: true
+                }
+            });
+        });
+
+        // =========================================================================
+        // "BUILT TO LAST" ENTRANCE (Matches Hero)
+        // =========================================================================
+        const extLeft = document.querySelector(".ext-left");
+        const extStats = document.querySelectorAll(".stat-box");
+
+        // 1. Text Slide Up (Like Hero)
+        gsap.from(extLeft, {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            ease: "power4.out",
+            scrollTrigger: {
+                trigger: ".parallax-extension",
+                start: "top 60%", // Starts when section is 60% up the screen
+                toggleActions: "play none none reverse"
+            }
+        });
+
+        // 2. Stats Slide Up (Staggered)
+        gsap.from(extStats, {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            stagger: 0.1, // One after another
+            ease: "power4.out",
+            scrollTrigger: {
+                trigger: ".parallax-extension",
+                start: "top 60%",
+                toggleActions: "play none none reverse"
+            }
+        });
+    </script>
+</body>
+</html>
