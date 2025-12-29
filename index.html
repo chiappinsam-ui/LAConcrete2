@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L.A CONCRETE | ARCHITECTURAL FINISHES</title>
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'concrete-orange': '#FF4D00',
+              'concrete-bg': '#F0F0F0',
+            }
+          }
+        }
+      }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
@@ -12,6 +25,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================================================
@@ -40,15 +55,34 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        h1 {
-            font-family: var(--f-heading);
-            font-size: clamp(3rem, 10vw, 10rem);
-            line-height: 0.9;
-            text-transform: uppercase;
-            color: #0F0F0F;
-            text-shadow: 0px 4px 20px rgba(255, 255, 255, 0.4);
+        .hero-content { 
+            position: relative; 
+            z-index: 2; 
+            text-align: center;
+            /* Pushes the text up higher than the middle */
+            padding-bottom: 15vh; 
         }
-        h1 span { display: block; overflow: hidden; }
+
+        h1 {
+            font-family: 'Kanit', sans-serif !important; 
+            font-weight: 900 !important;
+            font-size: clamp(2.5rem, 7vw, 8rem) !important; 
+            line-height: 1 !important;
+            text-transform: uppercase !important;
+            text-align: center;
+            width: 100%;
+            margin: 0 auto;
+            color: white;
+            -webkit-text-stroke: 2px black;
+            paint-order: stroke fill;
+            -webkit-font-smoothing: antialiased;
+            filter: drop-shadow(0px 10px 30px rgba(0,0,0,0.3));
+        }
+
+        .h1-reveal {
+            display: inline-block;
+            will-change: transform, opacity;
+        }
 
         /* Noise Overlay */
         .noise {
@@ -58,15 +92,10 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* Nav & Buttons */
-        nav {
-            position: fixed; top: 0; width: 100%; height: 100px;
-            padding: 0 4vw; display: flex; justify-content: space-between;
-            align-items: center; z-index: 1000;
-        }
-        .logo { font-family: var(--f-heading); font-size: 1.2rem; font-weight: 700; letter-spacing: -1px; color: var(--c-text); }
-        .logo span { color: var(--c-orange); }
+        /* Nav */
+        nav { isolation: isolate; }
 
+        /* Buttons */
         .mag-btn {
             display: inline-block; padding: 1.5rem 3rem; border: 1px solid var(--c-text);
             border-radius: 100px; text-transform: uppercase; letter-spacing: 2px;
@@ -106,7 +135,26 @@
             background: url('images/la1.png') center/cover no-repeat;
             opacity: 0.9; z-index: 1; will-change: transform, filter;
         }
-        .hero-content { position: relative; z-index: 2; text-align: center; }
+
+        /* Styling for the typing area */
+        .h1-reveal {
+            display: inline-block;
+            overflow: visible;
+        }
+
+        .cursor {
+            display: inline-block;
+            font-weight: 100;
+            color: var(--c-orange);
+            margin-left: 10px;
+            -webkit-text-stroke: 0px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0; } 
+        }
 
         /* Intro Section */
         .content-transition { background: var(--c-bg); position: relative; z-index: 5; }
@@ -253,21 +301,48 @@
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             align-content: center;
+            justify-items: center;
+            width: 100%;
+            margin-top: -120px; 
         }
 
         .stat-box {
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 30px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            
+            width: 100%; 
+            padding: 60px 20px;
+            border-radius: 50px; 
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            
+            transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        .stat-box:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 0, 0, 0.8);
+            border-color: var(--c-orange);
         }
         .stat-box h3 {
-            font-family: var(--f-heading); font-size: 3rem; color: var(--c-orange);
-            margin-bottom: 10px;
+            font-family: var(--f-heading); 
+            font-size: clamp(3rem, 5vw, 6rem); 
+            color: var(--c-orange);
+            margin: 0 0 10px 0;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
         .stat-box p {
-            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: 700;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
         }
 
         /* Mobile Fixes */
@@ -283,6 +358,11 @@
             .ext-left p { margin: 0 auto 30px auto; }
             .ext-right { margin-top: 40px; }
         }
+
+        /* Mobile Fix: keep stat cards full-width on phones */
+        @media (max-width: 768px) {
+            .ext-right { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -295,9 +375,47 @@
         </div>
     </div>
 
-    <nav>
-        <div class="logo">L.A <span>CONCRETE</span></div>
-        <a href="#" class="mag-btn"><span class="inner">Inquiry</span></a>
+    <nav class="fixed top-6 left-0 right-0 mx-auto max-w-5xl z-[5000] flex items-center justify-between border border-white/20 bg-black/80 backdrop-blur-md px-6 py-3 rounded-full text-white text-sm transition-all duration-300 hover:border-concrete-orange/50">
+        
+        <a href="#" class="font-[Kanit] font-bold text-lg tracking-tighter">
+            L.A <span class="text-concrete-orange">CONCRETE</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#" class="relative overflow-hidden h-5 group">
+                <span class="block group-hover:-translate-y-full transition-transform duration-300">Services</span>
+                <span class="block absolute top-full left-0 group-hover:translate-y-[-100%] transition-transform duration-300 text-concrete-orange">Services</span>
+            </a>
+            <a href="#" class="relative overflow-hidden h-5 group">
+                <span class="block group-hover:-translate-y-full transition-transform duration-300">Projects</span>
+                <span class="block absolute top-full left-0 group-hover:translate-y-[-100%] transition-transform duration-300 text-concrete-orange">Projects</span>
+            </a>
+            <a href="#" class="relative overflow-hidden h-5 group">
+                <span class="block group-hover:-translate-y-full transition-transform duration-300">About</span>
+                <span class="block absolute top-full left-0 group-hover:translate-y-[-100%] transition-transform duration-300 text-concrete-orange">About</span>
+            </a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-4">
+            <button class="px-5 py-2 rounded-full text-sm font-bold bg-white text-black hover:bg-concrete-orange hover:text-white transition duration-300">
+                Get Quote
+            </button>
+        </div>
+
+        <button id="menuToggle" class="md:hidden text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <div id="mobileMenu" class="absolute hidden top-full left-0 mt-2 bg-black/90 border border-white/10 w-full flex-col items-center gap-6 py-6 rounded-3xl backdrop-blur-xl">
+            <a class="hover:text-concrete-orange transition-colors" href="#">Services</a>
+            <a class="hover:text-concrete-orange transition-colors" href="#">Projects</a>
+            <a class="hover:text-concrete-orange transition-colors" href="#">About</a>
+            <button class="bg-concrete-orange text-white px-6 py-2 rounded-full font-bold">
+                Get Quote
+            </button>
+        </div>
     </nav>
 
     <main id="main">
@@ -305,8 +423,9 @@
             <div class="hero-img"></div>
             <div class="hero-content">
                 <h1>
-                    <span>Architectural</span>
-                    <span>Foundations</span>
+                    <div class="h1-reveal">
+                        <span id="typing-text">ARCHITECTURAL FOUNDATIONS</span><span class="cursor">|</span>
+                    </div>
                 </h1>
             </div>
         </section>
@@ -373,7 +492,7 @@
             <section class="parallax-extension">
                 <div class="extension-bg"></div>
                 
-                <div class="extension-container fade-away">
+                <div class="extension-container">
                     
                     <div class="ext-left">
                         <h2>Built to<br>Last.</h2>
@@ -385,20 +504,23 @@
 
                     <div class="ext-right">
                         <div class="stat-box">
-                            <h3>15+</h3>
-                            <p>Years Experience</p>
-                        </div>
-                        <div class="stat-box">
-                            <h3>200+</h3>
+                            <h3><span class="count" data-target="10000+">0</span></h3>
                             <p>Projects Completed</p>
                         </div>
+
                         <div class="stat-box">
-                            <h3>100%</h3>
-                            <p>Compliance Rate</p>
+                            <h3><span class="count" data-target="35+">0</span></h3>
+                            <p>Years Experience</p>
                         </div>
+
                         <div class="stat-box">
-                            <h3>24/7</h3>
-                            <p>Support Team</p>
+                            <h3><span class="count" data-target="8">0</span>+</h3>
+                            <p>Staff Members</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h3><span class="count" data-target="77">0</span>+</h3>
+                            <p>Suburbs in SA</p>
                         </div>
                     </div>
 
@@ -411,6 +533,65 @@
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
+
+        // =========================================================================
+        // 1. TYPEWRITER LOGIC (Full Sentence)
+        // =========================================================================
+        function initTypewriter(elementId, phrases) {
+            const element = document.getElementById(elementId);
+            let phraseIndex = 0;
+            let charIndex = phrases[0].length;
+            let isDeleting = true;
+            
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                
+                if (isDeleting) {
+                    element.innerText = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    element.innerText = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeSpeed = isDeleting ? 30 : 60;
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    isDeleting = true;
+                    typeSpeed = 3000;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    typeSpeed = 200;
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+            type();
+        }
+
+        // =========================================================================
+        // UPDATED NUMBER COUNTER (Late Start + Spike Effect)
+        // =========================================================================
+        gsap.utils.toArray(".stat-box").forEach(box => {
+            const counter = box.querySelector(".count");
+            const finalValue = parseFloat(counter.getAttribute("data-target"));
+            const obj = { value: 0 };
+
+            gsap.to(obj, {
+                value: finalValue,
+                duration: 2.5,
+                ease: "power2.out", 
+                scrollTrigger: {
+                    trigger: box,
+                    start: "top 70%",
+                    toggleActions: "play none none reverse" 
+                },
+                onUpdate: () => {
+                    counter.innerText = Math.ceil(obj.value).toLocaleString(); 
+                }
+            });
+        });
 
         const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
@@ -427,7 +608,25 @@
         
         // Hero Reveals
         tlLoader.from(".hero-img", { scale: 1.2, opacity: 0, duration: 1.5, ease: "power2.out" }, "-=0.8");
-        tlLoader.from(".hero-content h1 span", { yPercent: 110, duration: 1.2, ease: "power4.out", stagger: 0.1 }, "-=1");
+        
+        // =========================================================================
+        // 2. FALLING TEXT ANIMATION (Smooth & Flowy)
+        // =========================================================================
+        tlLoader.from(".h1-reveal", { 
+            y: -window.innerHeight, 
+            opacity: 0,
+            duration: 2.5,
+            ease: "power2.out",
+            onComplete: () => {
+                setTimeout(() => {
+                    initTypewriter("typing-text", [
+                        "ARCHITECTURAL FOUNDATIONS", 
+                        "BESPOKE FINISHES", 
+                        "INDUSTRIAL STRENGTH"
+                    ]);
+                }, 500);
+            }
+        }, "-=1");
 
         // Parallax Triggers
         gsap.to(".hero-img", { yPercent: 30, filter: "blur(10px)", ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }});
@@ -526,7 +725,6 @@
         // "BUILT TO LAST" ENTRANCE (Matches Hero)
         // =========================================================================
         const extLeft = document.querySelector(".ext-left");
-        const extStats = document.querySelectorAll(".stat-box");
 
         // 1. Text Slide Up (Like Hero)
         gsap.from(extLeft, {
@@ -542,16 +740,31 @@
         });
 
         // 2. Stats Slide Up (Staggered)
-        gsap.from(extStats, {
+        // 2. Stats Slide Up (Staggered)
+        // FIXED: Uses the same trigger as the text so they can't fail
+        gsap.from(".stat-box", {
             y: 100,
             opacity: 0,
-            duration: 1.5,
-            stagger: 0.1, // One after another
-            ease: "power4.out",
+            duration: 1,
+            stagger: 0.15,
+            ease: "power2.out",
             scrollTrigger: {
                 trigger: ".parallax-extension",
                 start: "top 60%",
                 toggleActions: "play none none reverse"
+            }
+        });
+
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuToggle.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
             }
         });
     </script>
