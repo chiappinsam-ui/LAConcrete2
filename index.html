@@ -59,7 +59,6 @@
             position: relative; 
             z-index: 2; 
             text-align: center;
-            /* Pushes the text up higher than the middle */
             padding-bottom: 15vh; 
         }
 
@@ -129,17 +128,72 @@
             height: 100vh; width: 100%; position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
-        .hero-img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 120%;
-            /* RESTORED YOUR IMAGE */
-            background: url('images/la1.png') center/cover no-repeat;
-            opacity: 0.9; z-index: 1; will-change: transform, filter;
+        
+        /* ==========================================================================
+           VIDEO HERO STYLES (3-Card Layout)
+           ========================================================================== */
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; 
+            width: 100%; height: 120%;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            background-color: #050505;
         }
 
-        /* Styling for the typing area */
-        .h1-reveal {
-            display: inline-block;
-            overflow: visible;
+        .video-card {
+            position: relative;
+            width: 100%; height: 100%;
+            border-radius: 20px; 
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1); 
+            background: #000; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .video-card video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .v-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .hero-bg { gap: 10px; padding: 10px; }
+            .video-card { border-radius: 10px; }
+        }
+
+        /* ==========================================================================
+           SCROLL ARROW & CURSOR
+           ========================================================================== */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            opacity: 0.8;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 50px;
+            height: 50px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
         }
 
         .cursor {
@@ -157,45 +211,24 @@
         }
 
         /* Intro Section */
-        .content-transition { background: var(--c-bg); position: relative; z-index: 5; }
-        .intro-header {
-            padding: 15vh 4vw 10vh 4vw; display: grid; grid-template-columns: 1fr 1fr;
-            gap: 4vw; align-items: end;
+        .content-transition { 
+            background: var(--c-bg); 
+            position: relative; 
+            z-index: 5; 
         }
-        .intro-left h2 {
-            font-family: var(--f-heading); font-size: 3vw; line-height: 1;
-            color: #0F0F0F; text-transform: uppercase;
-        }
-        .intro-right p { font-size: 1.1rem; color: #555; max-width: 450px; line-height: 1.6; }
 
         /* ==========================================================================
-           HORIZONTAL SCROLL SECTION (UPDATED)
+           HORIZONTAL SCROLL SECTION
            ========================================================================== */
-        
         .horizontal-scroll-wrapper {
             width: 100%;
             height: 100vh;
             overflow: hidden;
             display: flex;
             position: relative;
-            
-            /* THE CLEAN FIX: CSS MASKS 
-               Instead of painting white over the top, we fade the content out using a mask.
-               This keeps the contrast perfect. */
-            -webkit-mask-image: linear-gradient(
-                to right, 
-                transparent 0%, 
-                black 5%, 
-                black 95%, 
-                transparent 100%
-            );
-            mask-image: linear-gradient(
-                to right, 
-                transparent 0%, 
-                black 5%, 
-                black 95%, 
-                transparent 100%
-            );
+            /* CLEAN FIX: CSS MASKS */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
 
         .horizontal-track {
@@ -205,11 +238,11 @@
             gap: 0; 
             position: relative;
             z-index: 1;
-            padding-left: 5vw; /* Adds a little breathing room at the start */
+            padding-left: 5vw;
         }
 
         .h-panel {
-            width: 80vw; /* Increased slightly to feel more cinematic */
+            width: 80vw;
             height: 100%;
             display: flex;
             align-items: center;
@@ -247,11 +280,11 @@
         
         .panel-img {
             height: auto;
-            aspect-ratio: 4/3; /* Enforces a nice standard architectural photography shape */
+            aspect-ratio: 4/3;
             width: 100%;
-            border-radius: 4px; /* Tighter radius looks more "industrial/concrete" */
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sharper, cleaner shadow */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
         .panel-img img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -268,15 +301,12 @@
         }
         .extension-bg {
             position: absolute;
-            top: 0; 
-            left: 0;
-            width: 100%;
-            height: 150%; /* Massive height buffer */
-            
+            top: 0; left: 0;
+            width: 100%; height: 150%;
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/la1.png') center/cover no-repeat;
             z-index: 1; 
             will-change: transform;
-            pointer-events: none; /* Good practice so it doesn't block clicks */
+            pointer-events: none;
         }
         
         .extension-container {
@@ -303,23 +333,20 @@
             align-content: center;
             justify-items: center;
             width: 100%;
-            margin-top: -120px; 
+            margin-top: -120px; /* Overlap effect */
         }
 
         .stat-box {
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            
             width: 100%; 
             padding: 60px 20px;
             border-radius: 50px; 
-            
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            
             transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
@@ -359,7 +386,6 @@
             .ext-right { margin-top: 40px; }
         }
 
-        /* Mobile Fix: keep stat cards full-width on phones */
         @media (max-width: 768px) {
             .ext-right { grid-template-columns: 1fr; }
         }
@@ -420,30 +446,48 @@
 
     <main id="main">
         <section class="hero">
-            <div class="hero-img"></div>
+            <div class="hero-bg">
+                
+                <div class="video-card">
+                    <div class="v-overlay"></div>
+                    <video autoplay loop muted playsinline>
+                        <source src="images/lavid2.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-card">
+                    <div class="v-overlay"></div>
+                    <video autoplay loop muted playsinline>
+                        <source src="images/lavid3.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-card">
+                    <div class="v-overlay"></div>
+                    <video autoplay loop muted playsinline>
+                        <source src="images/lavid4.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+            </div>
+
             <div class="hero-content">
                 <h1>
                     <div class="h1-reveal">
                         <span id="typing-text">ARCHITECTURAL FOUNDATIONS</span><span class="cursor">|</span>
                     </div>
                 </h1>
+                
+                <div class="scroll-indicator">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                    </svg>
+                </div>
             </div>
         </section>
 
         <div class="content-transition">
             
-            <section class="intro-header fade-away">
-                <div class="intro-left">
-                    <h2>Bespoke Finishes.<br>Industrial Strength.</h2>
-                </div>
-                <div class="intro-right">
-                    <p>
-                        We redefine structural integrity through architectural precision. 
-                        Serving Melbourne's most ambitious residential and commercial projects.
-                    </p>
-                </div>
-            </section>
-
             <section class="horizontal-scroll-wrapper">
                 <div class="horizontal-track">
                     
@@ -467,8 +511,8 @@
                                 <h4>Reinforcement</h4>
                                 <p>Precision steel fixing and mesh installation providing the tensile strength required for longevity.</p>
                             </div>
-                            <div class="panel-img">
-                                <img src="images/la3.png" alt="Reinforcement">
+                    <div class="panel-img">
+                                <img src="images/la5.png" alt="Reinforcement">
                             </div>
                         </div>
                     </div>
@@ -481,7 +525,9 @@
                                 <p>Expert concrete pouring and leveling, ensuring a flawless architectural finish.</p>
                             </div>
                             <div class="panel-img">
-                                <img src="images/la4.png" alt="Placement">
+                                <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                                    <source src="images/lavid.mp4" type="video/mp4">
+                                </video>
                             </div>
                         </div>
                     </div>
@@ -598,19 +644,26 @@
         requestAnimationFrame(raf);
 
         // =========================================================================
-        // LOADER SEQUENCE (EXACT COPY FROM YOUR PROVIDED CODE)
+        // LOADER SEQUENCE
         // =========================================================================
         const tlLoader = gsap.timeline();
         tlLoader.to(".loader-logo span", { y: 0, duration: 1.2, ease: "power4.out", stagger: 0.2 });
         tlLoader.to(".loader-logo .accent", { color: "var(--c-orange)", duration: 0.2, ease: "power2.in" }, "-=0.4");
-        tlLoader.to({}, { duration: 0.5 }); // The 0.5s PAUSE you wanted kept
+        tlLoader.to({}, { duration: 0.5 }); 
         tlLoader.to(".loader", { yPercent: -100, duration: 1.3, ease: "power4.inOut" });
         
-        // Hero Reveals
-        tlLoader.from(".hero-img", { scale: 1.2, opacity: 0, duration: 1.5, ease: "power2.out" }, "-=0.8");
+        // Hero Reveals (UPDATED FOR VIDEO CARDS)
+        tlLoader.from(".video-card", { 
+            y: 100,
+            scale: 1.1,
+            opacity: 0, 
+            duration: 1.5, 
+            stagger: 0.2,
+            ease: "power4.out" 
+        }, "-=0.5");
         
         // =========================================================================
-        // 2. FALLING TEXT ANIMATION (Smooth & Flowy)
+        // 2. FALLING TEXT + SYNCED ARROW
         // =========================================================================
         tlLoader.from(".h1-reveal", { 
             y: -window.innerHeight, 
@@ -626,10 +679,34 @@
                     ]);
                 }, 500);
             }
-        }, "-=1");
+        }, "-=1")
+        .from(".scroll-indicator", {
+            y: -50,
+            opacity: 0,
+            duration: 1,
+            ease: "bounce.out"
+        }, "-=0.5");
 
         // Parallax Triggers
-        gsap.to(".hero-img", { yPercent: 30, filter: "blur(10px)", ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }});
+        gsap.to(".hero-bg", { 
+            yPercent: 20,
+            ease: "none",
+            scrollTrigger: { 
+                trigger: ".hero", 
+                start: "top top", 
+                end: "bottom top", 
+                scrub: true 
+            }
+        });
+        gsap.to(".scroll-indicator", {
+            opacity: 0,
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "20% top",
+                scrub: true
+            }
+        });
         gsap.to(".hero-content", { y: -150, opacity: 0, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "50% top", scrub: true }});
         gsap.fromTo(".extension-bg", 
             { 
@@ -672,15 +749,15 @@
                 }
             });
 
-            // CARDS: Vertical Rise + Hero Fade (Matches Top Section)
+            // CARDS: Vertical Rise + Hero Fade
             gsap.utils.toArray(".panel-content").forEach((panel, i) => {
                 if (i === 0) return; 
 
                 gsap.from(panel, {
-                    y: 150,            // CHANGED: Uses 'y' to rise up from bottom (instead of 'x')
-                    opacity: 0,        // Fades in
-                    duration: 1.5,     // Slower, premium speed
-                    ease: "power4.out", // The exact "Hero" easing
+                    y: 150,
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: "power4.out",
                     scrollTrigger: {
                         trigger: panel,
                         containerAnimation: tween, 
@@ -722,11 +799,11 @@
         });
 
         // =========================================================================
-        // "BUILT TO LAST" ENTRANCE (Matches Hero)
+        // "BUILT TO LAST" ENTRANCE
         // =========================================================================
         const extLeft = document.querySelector(".ext-left");
 
-        // 1. Text Slide Up (Like Hero)
+        // 1. Text Slide Up
         gsap.from(extLeft, {
             y: 100,
             opacity: 0,
@@ -734,14 +811,12 @@
             ease: "power4.out",
             scrollTrigger: {
                 trigger: ".parallax-extension",
-                start: "top 60%", // Starts when section is 60% up the screen
+                start: "top 60%", 
                 toggleActions: "play none none reverse"
             }
         });
 
         // 2. Stats Slide Up (Staggered)
-        // 2. Stats Slide Up (Staggered)
-        // FIXED: Uses the same trigger as the text so they can't fail
         gsap.from(".stat-box", {
             y: 100,
             opacity: 0,
