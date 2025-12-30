@@ -217,18 +217,18 @@
             z-index: 5; 
         }
 
-        /* ==========================================================================
-           HORIZONTAL SCROLL SECTION
-           ========================================================================== */
+        /* =========================================
+           CINEMATIC FULLSCREEN CARDS (FINAL)
+           ========================================= */
         .horizontal-scroll-wrapper {
+            /* Pushes the track down so cards sit UNDER the fixed nav */
+            padding-top: 120px; 
+            box-sizing: border-box;
             width: 100%;
             height: 100vh;
             overflow: hidden;
             display: flex;
             position: relative;
-            /* CLEAN FIX: CSS MASKS */
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
 
         .horizontal-track {
@@ -238,55 +238,99 @@
             gap: 0; 
             position: relative;
             z-index: 1;
-            padding-left: 5vw;
         }
 
         .h-panel {
-            width: 80vw;
-            height: 100%;
+            /* Width of the screen */
+            width: 100vw; 
+            /* Height fills the remaining space inside wrapper */
+            height: 100%; 
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Align to top of padding */
             justify-content: center;
-            padding: 0 4vw;
+            padding: 0; 
             box-sizing: border-box;
             flex-shrink: 0;
         }
 
-        .panel-content {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 4vw;
-            width: 100%;
-            max-width: 1600px;
-            align-items: center;
+        .cine-card {
+            position: relative;
+            width: 95vw;       
+            /* CALCULATED HEIGHT: Viewport - Top Padding - Bottom Buffer */
+            height: calc(100vh - 160px);      
+            border-radius: 2rem;
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.5s ease;
         }
 
-        .panel-text h3 {
-            font-family: var(--f-heading);
-            font-size: 8vw; 
-            color: transparent;
-            -webkit-text-stroke: 2px var(--c-orange);
-            opacity: 0.3;
-            line-height: 1;
-        }
-        .panel-text h4 {
-            font-family: var(--f-heading);
-            font-size: 4vw;
-            text-transform: uppercase;
-            margin-top: -2vw;
-            margin-bottom: 20px;
-        }
-        .panel-text p { font-size: 1.2rem; color: #555; max-width: 400px; }
-        
-        .panel-img {
-            height: auto;
-            aspect-ratio: 4/3;
+        /* Background Image/Video */
+        .cine-bg {
+            position: absolute;
+            inset: 0;
             width: 100%;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            height: 100%;
+            z-index: 0;
         }
-        .panel-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cine-bg img, .cine-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            /* CHANGED: Removed the initial scale so it looks "zoomed out" */
+            transform: scale(1); 
+            transition: transform 1.5s ease;
+        }
+
+        /* Hover Effect: Zoom IN only when hovered */
+        .cine-card:hover .cine-bg img, 
+        .cine-card:hover .cine-bg video {
+            transform: scale(1.1); 
+        }
+
+        /* Dark Gradient Overlay */
+        .cine-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+            z-index: 1;
+        }
+
+        /* Number */
+        .cine-num {
+            position: absolute;
+            top: 2vw;
+            right: 4vw;
+            font-size: 8vw; 
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255,255,255,0.1);
+            font-family: 'Kanit', sans-serif;
+            z-index: 2;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        /* Content */
+        .cine-content {
+            position: absolute;
+            bottom: 4vw;
+            left: 4vw;
+            z-index: 2;
+        }
+
+        .cine-title {
+            font-family: 'Kanit', sans-serif;
+            font-size: 8vw; 
+            line-height: 0.85;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .text-orange { color: #FF4D00; }
 
         /* ==========================================================================
            EXTENSION SECTION (FILLED)
@@ -374,11 +418,10 @@
 
         /* Mobile Fixes */
         @media (max-width: 1000px) {
-            .horizontal-scroll-wrapper { height: auto; display: block; }
+            .horizontal-scroll-wrapper { height: auto; display: block; padding-top: 80px; }
             .horizontal-track { flex-direction: column; height: auto; }
-            .h-panel { width: 100%; height: auto; padding: 100px 5vw; border-right: none; border-bottom: 1px solid #ddd; }
-            .panel-content { grid-template-columns: 1fr; }
-            .panel-img { height: 50vh; order: -1; margin-bottom: 30px; }
+            .h-panel { width: 100%; height: auto; padding: 0 0 60px 0; justify-content: center; }
+            .cine-card { width: 100%; height: 70vh; }
             
             .extension-container { grid-template-columns: 1fr; text-align: center; }
             .ext-left h2 { font-size: 3.5rem; }
@@ -490,44 +533,44 @@
             
             <section class="horizontal-scroll-wrapper">
                 <div class="horizontal-track">
-                    
+
                     <div class="h-panel">
-                        <div class="panel-content">
-                            <div class="panel-text">
-                                <h3>01.</h3>
-                                <h4>Preparation</h4>
-                                <p>Site analysis and detailed excavation ensuring the perfect foundation grade before we pour.</p>
+                        <div class="cine-card group">
+                            <div class="cine-bg">
+                                <img src="images/la2.png" alt="Site Prep">
                             </div>
-                            <div class="panel-img">
-                                <img src="images/la2.png" alt="Preparation">
+                            <div class="cine-overlay"></div>
+                            <div class="cine-num">01</div>
+                            <div class="cine-content">
+                                <h3 class="cine-title">Site <br><span class="text-orange">Prep</span></h3>
                             </div>
                         </div>
                     </div>
 
                     <div class="h-panel">
-                        <div class="panel-content">
-                            <div class="panel-text">
-                                <h3>02.</h3>
-                                <h4>Reinforcement</h4>
-                                <p>Precision steel fixing and mesh installation providing the tensile strength required for longevity.</p>
+                        <div class="cine-card group">
+                            <div class="cine-bg">
+                                <img src="images/la5.png" alt="Steel Fixing">
                             </div>
-                    <div class="panel-img">
-                                <img src="images/la5.png" alt="Reinforcement">
+                            <div class="cine-overlay"></div>
+                            <div class="cine-num">02</div>
+                            <div class="cine-content">
+                                <h3 class="cine-title">Steel <br><span class="text-orange">Fixing</span></h3>
                             </div>
                         </div>
                     </div>
 
                     <div class="h-panel">
-                        <div class="panel-content">
-                            <div class="panel-text">
-                                <h3>03.</h3>
-                                <h4>Placement</h4>
-                                <p>Expert concrete pouring and leveling, ensuring a flawless architectural finish.</p>
-                            </div>
-                            <div class="panel-img">
-                                <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                        <div class="cine-card group">
+                            <div class="cine-bg">
+                                <video autoplay loop muted playsinline webkit-playsinline>
                                     <source src="images/lavid.mp4" type="video/mp4">
                                 </video>
+                            </div>
+                            <div class="cine-overlay"></div>
+                            <div class="cine-num">03</div>
+                            <div class="cine-content">
+                                <h3 class="cine-title">Pour & <br><span class="text-orange">Finish</span></h3>
                             </div>
                         </div>
                     </div>
@@ -725,15 +768,15 @@
         );
 
         // =========================================================================
-        // HORIZONTAL SCROLL LOGIC
+        // 6. HORIZONTAL SCROLL (FULL SCREEN & CINEMATIC)
         // =========================================================================
         let mm = gsap.matchMedia();
-
         mm.add("(min-width: 1001px)", () => {
             const track = document.querySelector(".horizontal-track");
             
-            function getScrollAmount() {
-                return track.scrollWidth - window.innerWidth;
+            // Calculates total scroll distance
+            function getScrollAmount() { 
+                return track.scrollWidth - window.innerWidth; 
             }
 
             const tween = gsap.to(track, {
@@ -749,22 +792,23 @@
                 }
             });
 
-            // CARDS: Vertical Rise + Hero Fade
-            gsap.utils.toArray(".panel-content").forEach((panel, i) => {
-                if (i === 0) return; 
-
-                gsap.from(panel, {
-                    y: 150,
-                    opacity: 0,
-                    duration: 1.5,
-                    ease: "power4.out",
-                    scrollTrigger: {
-                        trigger: panel,
-                        containerAnimation: tween, 
-                        start: "left 85%", 
-                        toggleActions: "play none none reverse" 
+            // Entrance Animation
+            gsap.utils.toArray(".cine-card").forEach((card, i) => {
+                gsap.fromTo(card, 
+                    { opacity: 0, scale: 0.95 },
+                    {
+                        opacity: 1,
+                        scale: 1,
+                        duration: 1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: card,
+                            containerAnimation: tween,
+                            start: "left 100%", 
+                            toggleActions: "play none none reverse"
+                        }
                     }
-                });
+                );
             });
         });
 
