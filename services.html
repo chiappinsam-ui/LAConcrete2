@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L.A CONCRETE | ARCHITECTURAL FINISHES</title>
+    <title>SERVICES | L.A CONCRETE</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,7 +12,7 @@
           extend: {
             colors: {
               'concrete-orange': '#FF4D00',
-              'concrete-bg': '#F0F0F0',
+              'concrete-bg': '#050505',
             }
           }
         }
@@ -25,8 +25,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -43,16 +41,21 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html.lenis { height: auto; } 
-        .lenis.lenis-smooth { scroll-behavior: auto; }
-        
+        /* Disable Lenis on mobile for native snap feel, keep on desktop if preferred 
+           BUT for Snap Scroll, standard CSS snap is often smoother/more reliable than JS */
+        html { 
+            height: 100%;
+            scroll-snap-type: y mandatory; /* THE MAGIC SAUCE */
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: var(--c-bg);
             color: var(--c-text);
             font-family: var(--f-body);
             margin: 0;
-            width: 100%;
-            overflow-x: hidden;
+            height: 100%;
+            overflow-y: scroll;
         }
 
         /* Noise Overlay */
@@ -79,18 +82,21 @@
         .loader-logo .accent { color: #1a1a1a; transition: color 0.3s; }
 
         /* ==========================================================================
-           SECTIONS & GRID
+           SNAP SECTIONS
            ========================================================================== */
-        /* Header Section (Full Screen) */
-        .hero-section {
-            height: 100vh;
+        section {
+            height: 100vh; /* Force full screen height */
             width: 100%;
+            scroll-snap-align: start; /* Snap to top of this section */
+            scroll-snap-stop: always; /* Force stop (don't skip sections) */
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 80px;
+            position: relative;
+            padding-top: 80px; /* Offset for Fixed Nav */
         }
 
+        /* HEADER SECTION */
         .services-header h1 {
             font-family: var(--f-heading);
             font-size: clamp(3rem, 12vw, 9rem);
@@ -101,90 +107,105 @@
             text-align: center;
         }
 
-        /* GRID LAYOUT FOR CARDS */
-        .grid-section {
-            min-height: 100vh;
-            padding: 5rem 2rem;
+        /* CARD STYLES (Adapted for Single View) */
+        .service-card-wrapper {
+            width: 90vw;
+            height: 80vh; /* Fits perfectly inside the 100vh section */
+            max-width: 1200px;
             position: relative;
         }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr); /* Mobile default */
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: repeat(3, 1fr); /* Desktop: 3 Columns */
-                gap: 3rem;
-            }
-        }
-
-        /* CARD STYLES */
         .service-card {
             position: relative;
             width: 100%;
-            aspect-ratio: 3/4; /* Taller rectangle shape */
-            border-radius: 1.5rem;
+            height: 100%;
+            border-radius: 2rem;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: #000;
-            opacity: 1; /* GSAP will handle opacity */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         .s-bg {
-            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
         }
-        .s-bg img {
-            width: 100%; height: 100%; object-fit: cover;
-            transform: scale(1.1); /* Start slightly zoomed for parallax */
-            transition: transform 0.7s ease-out;
+        .s-bg img, .s-bg video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+            transition: transform 1.5s ease;
         }
         
-        .service-card:hover .s-bg img {
-            transform: scale(1.0); /* Zoom out effect on hover */
+        .service-card:hover .s-bg img, 
+        .service-card:hover .s-bg video {
+            transform: scale(1.1);
         }
 
         .s-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.1) 100%);
             z-index: 1;
         }
 
         .s-content {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 2rem; z-index: 2;
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 3rem;
+            z-index: 2;
         }
 
         .s-num {
-            position: absolute; top: 1.5rem; right: 1.5rem;
-            font-family: var(--f-heading); font-size: 2.5rem;
-            color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-            line-height: 1; z-index: 2;
+            position: absolute;
+            top: 2rem; right: 2rem;
+            font-family: var(--f-heading);
+            font-size: 4rem;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            line-height: 1;
         }
 
         .s-title {
-            font-family: var(--f-heading); font-size: 2.5rem;
-            line-height: 0.9; font-weight: 800; text-transform: uppercase;
-            color: white; margin-bottom: 0.5rem;
+            font-family: var(--f-heading);
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 1rem;
         }
 
         .s-desc {
-            font-size: 0.95rem; color: #ccc; line-height: 1.4; opacity: 0.8;
+            font-size: 1.1rem;
+            color: #ccc;
+            max-width: 600px;
+            line-height: 1.5;
+            opacity: 0.9;
         }
-        
+
         .text-orange { color: #FF4D00; }
 
-        /* FOOTER */
+        /* FOOTER SNAP */
         .footer-snap {
-            height: 100vh; display: flex; align-items: center; justify-content: center;
-            background-color: #000; position: relative; overflow: hidden;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
         }
         .footer-bg {
             position: absolute; inset: 0; opacity: 0.4;
             background: url('images/la1.png') center/cover;
+        }
+        
+        @media (max-width: 768px) {
+            .service-card-wrapper {
+                width: 95vw;
+                height: 75vh;
+            }
+            .s-content { padding: 1.5rem; }
+            .s-num { font-size: 3rem; top: 1.5rem; right: 1.5rem; }
         }
     </style>
 </head>
@@ -199,104 +220,100 @@
     </div>
 
     <nav class="fixed top-6 left-0 right-0 mx-auto max-w-5xl z-[5000] flex items-center justify-between border border-white/20 bg-black/80 backdrop-blur-md px-6 py-3 rounded-full text-white text-sm transition-all duration-300 hover:border-concrete-orange/50">
-        
         <a href="index.html" class="font-[Kanit] font-bold text-lg tracking-tighter">
             L.A <span class="text-concrete-orange">CONCRETE</span>
         </a>
-
         <div class="hidden md:flex items-center gap-8">
             <a href="index.html" class="hover:text-concrete-orange transition-colors">Home</a>
-            <a href="services.html" class="hover:text-concrete-orange transition-colors">Services</a>
+            <a href="services.html" class="text-concrete-orange">Services</a>
+            <a href="#" class="hover:text-concrete-orange transition-colors">Projects</a>
             <a href="#" class="hover:text-concrete-orange transition-colors">About</a>
         </div>
-
         <div class="hidden md:flex items-center gap-4">
-            <button class="px-5 py-2 rounded-full text-sm font-bold bg-white text-black hover:bg-concrete-orange hover:text-white transition duration-300">
-                Get Quote
-            </button>
+            <button class="px-5 py-2 rounded-full text-sm font-bold bg-white text-black hover:bg-concrete-orange hover:text-white transition duration-300">Get Quote</button>
         </div>
-
         <button id="menuToggle" class="md:hidden text-white focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
-
         <div id="mobileMenu" class="absolute hidden top-full left-0 mt-2 bg-black/90 border border-white/10 w-full flex-col items-center gap-6 py-6 rounded-3xl backdrop-blur-xl">
-            <a class="hover:text-concrete-orange transition-colors" href="index.html">Home</a>
-            <a class="hover:text-concrete-orange transition-colors" href="services.html">Services</a>
+            <a class="text-concrete-orange" href="#">Services</a>
+            <a class="hover:text-concrete-orange transition-colors" href="#">Projects</a>
             <a class="hover:text-concrete-orange transition-colors" href="#">About</a>
-            <button class="bg-concrete-orange text-white px-6 py-2 rounded-full font-bold">
-                Get Quote
-            </button>
         </div>
     </nav>
 
     <main>
-        <section class="hero-section services-header">
+        
+        <section class="services-header">
             <h1>
-                Our <br>
-                <span class="text-concrete-orange">Services.</span>
+                Precision <br>
+                <span class="text-concrete-orange">Execution.</span>
             </h1>
         </section>
 
-        <section class="grid-section">
-            <div class="cards-grid">
-                
-                <div class="service-card" data-col="left">
-                    <div class="s-bg"><img src="images/la2.png" alt="Foundations"></div> <div class="s-overlay"></div>
+        <section>
+            <div class="service-card-wrapper">
+                <div class="service-card">
+                    <div class="s-bg">
+                        <img src="images/la2.png" alt="Preparation">
+                    </div>
+                    <div class="s-overlay"></div>
                     <div class="s-num">01</div>
                     <div class="s-content">
-                        <h2 class="s-title">Foundations</h2>
-                        <p class="s-desc">Heavy-duty structural bases ensuring absolute stability for any build.</p>
+                        <h2 class="s-title">Site <span class="text-orange">Prep</span></h2>
+                        <p class="s-desc">Detailed excavation, soil removal, and laser leveling ensuring the perfect foundation grade before we pour.</p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="service-card" data-col="mid">
-                    <div class="s-bg"><img src="images/la5.png" alt="Warehouses"></div> <div class="s-overlay"></div>
+        <section>
+            <div class="service-card-wrapper">
+                <div class="service-card">
+                    <div class="s-bg">
+                        <img src="images/la5.png" alt="Steel Fixing">
+                    </div>
+                    <div class="s-overlay"></div>
                     <div class="s-num">02</div>
                     <div class="s-content">
-                        <h2 class="s-title">Warehouses</h2>
-                        <p class="s-desc">Expansive industrial slabs engineered for high-load machinery and traffic.</p>
+                        <h2 class="s-title">Steel <span class="text-orange">Fixing</span></h2>
+                        <p class="s-desc">Structural reinforcement using precision-laid rebar and heavy-gauge mesh to guarantee tensile strength.</p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="service-card" data-col="right">
-                    <div class="s-bg"><img src="images/la3.png" alt="Footpaths"></div> <div class="s-overlay"></div>
+        <section>
+            <div class="service-card-wrapper">
+                <div class="service-card">
+                    <div class="s-bg">
+                        <img src="images/la3.png" alt="House Slabs">
+                    </div>
+                    <div class="s-overlay"></div>
                     <div class="s-num">03</div>
                     <div class="s-content">
-                        <h2 class="s-title">Footpaths</h2>
-                        <p class="s-desc">Public and private pathways finished with slip-resistant textures.</p>
+                        <h2 class="s-title">House <span class="text-orange">Slabs</span></h2>
+                        <p class="s-desc">Specialized waffle pod and raft slab systems designed for long-lasting residential stability.</p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="service-card" data-col="left">
-                    <div class="s-bg"><img src="images/la4.png" alt="Highrises"></div> <div class="s-overlay"></div>
+        <section>
+            <div class="service-card-wrapper">
+                <div class="service-card">
+                    <div class="s-bg">
+                        <video autoplay loop muted playsinline webkit-playsinline>
+                            <source src="images/lavid.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="s-overlay"></div>
                     <div class="s-num">04</div>
                     <div class="s-content">
-                        <h2 class="s-title">Highrises</h2>
-                        <p class="s-desc">Multi-level suspended slab systems for vertical construction projects.</p>
+                        <h2 class="s-title">Pour & <span class="text-orange">Finish</span></h2>
+                        <p class="s-desc">Expert leveling and vibration techniques delivering a flawless architectural or industrial surface.</p>
                     </div>
                 </div>
-
-                <div class="service-card" data-col="mid">
-                    <div class="s-bg"><img src="images/la1.png" alt="Shed Slabs"></div> <div class="s-overlay"></div>
-                    <div class="s-num">05</div>
-                    <div class="s-content">
-                        <h2 class="s-title">Shed Slabs</h2>
-                        <p class="s-desc">Precision poured slabs for residential sheds and large storage units.</p>
-                    </div>
-                </div>
-
-                <div class="service-card" data-col="right">
-                    <div class="s-bg"><img src="images/la5.png" alt="Road Ways"></div> <div class="s-overlay"></div>
-                    <div class="s-num">06</div>
-                    <div class="s-content">
-                        <h2 class="s-title">Road Ways</h2>
-                        <p class="s-desc">Civil infrastructure concreting built to withstand heavy vehicular use.</p>
-                    </div>
-                </div>
-
             </div>
         </section>
 
@@ -311,18 +328,11 @@
                 </button>
             </div>
         </section>
+
     </main>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
-
-        // Initialize Lenis for smooth scrolling
-        const lenis = new Lenis();
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
 
         // 1. LOADER SEQUENCE
         const tlLoader = gsap.timeline();
@@ -331,45 +341,27 @@
         tlLoader.to({}, { duration: 0.5 }); 
         tlLoader.to(".loader", { yPercent: -100, duration: 1.3, ease: "power4.inOut" });
 
-        // 2. HERO HEADER ANIMATION
+        // 2. PAGE HEADER ANIMATION
         tlLoader.to(".services-header h1", {
-            opacity: 1, y: 0, duration: 1.5, ease: "power4.out"
+            opacity: 1,
+            y: 0,
+            duration: 1.5,
+            ease: "power4.out"
         }, "-=0.8");
 
-        // 3. GRID ENTRANCE ANIMATIONS
-        // We select all cards and apply animation based on their 'data-col' attribute
-        gsap.utils.toArray('.service-card').forEach((card) => {
-            
-            let xVal = 0;
-            let yVal = 0;
-            const col = card.getAttribute('data-col');
-
-            // Logic for direction
-            if (col === 'left') xVal = -150;     // Comes from Left
-            else if (col === 'right') xVal = 150; // Comes from Right
-            else yVal = 150;                      // Middle comes from Bottom
-
-            gsap.fromTo(card, 
-                { 
-                    opacity: 0, 
-                    x: xVal, 
-                    y: yVal 
-                },
-                {
-                    opacity: 1,
-                    x: 0,
-                    y: 0,
-                    duration: 1.2,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: card,
-                        start: "top 85%", // Starts when top of card hits 85% of viewport height
-                        end: "top 50%",
-                        scrub: 1,         // Makes the movement tied to scroll speed (Parallax feel)
-                        toggleActions: "play reverse play reverse"
-                    }
+        // 3. CARD ENTRANCE ANIMATIONS (Subtle Fade Up on Scroll)
+        gsap.utils.toArray(".service-card").forEach((card, i) => {
+            gsap.from(card, {
+                opacity: 0,
+                scale: 0.9,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%", // Triggers as it snaps into view
+                    toggleActions: "play none none reverse"
                 }
-            );
+            });
         });
 
         // Mobile Menu Logic
